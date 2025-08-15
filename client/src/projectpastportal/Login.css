@@ -1,0 +1,199 @@
+/* ==================== Login Page Scoped ==================== */
+.login-page {
+  background-color: #f3e9dc;
+   /* background-image: url('https://yourstorage.googleapis.com/path/to/eg305gau7yetvrja.webp'); */
+    background-image: url('./images/historical-background-eg305gau7yetvrja\ \(1\).webp'); 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Cinzel', serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 60px;
+}
+
+/* Animated map background */
+.login-page .map-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Old_map.svg/2048px-Old_map.svg.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  animation: panZoom 60s infinite alternate ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes panZoom {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.05) translate(-10px, -10px); }
+  100% { transform: scale(1.1) translate(-20px, -20px); }
+}
+
+/* Login container */
+.login-page .login-container {
+  background-color: rgba(255, 250, 243, 0.95);
+  padding: 40px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(75, 46, 24, 0.25);
+  width: 500px;
+  max-width: 90%;
+  text-align: center;
+  margin: 0 auto 60px;
+  border: 1px solid #e3d5b8;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-page .login-container:hover {
+  transform: scale(1.01);
+  box-shadow: 0 15px 35px rgba(75, 46, 24, 0.35);
+}
+
+/* Headings & Text */
+.login-page .login-container h2 {
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+  color: #4b2e18;
+  letter-spacing: 1px;
+}
+
+.login-page .login-container p {
+  color: #6e5844;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+/* Form styles */
+.login-page .form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-page .form-group label {
+  font-size: 1.1rem;
+  color: #4a3929;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Inputs */
+.login-page .login-container input[type="text"],
+.login-page .login-container input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccb89f;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #fdf9f3;
+  transition: all 0.3s ease;
+}
+
+.login-page .login-container input:focus {
+  outline: none;
+  border-color: #c28e4c;
+  box-shadow: 0 0 6px rgba(194, 142, 76, 0.4);
+}
+
+/* Show password */
+.login-page .show-pass {
+  float: right;
+  margin-top: -28px;
+  margin-right: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #996c3e;
+}
+
+.login-page .show-pass:hover {
+  text-decoration: underline;
+  color: #7a5026;
+}
+
+/* Buttons */
+.login-page .login-container button {
+  width: 100%;
+  padding: 14px;
+  background-color: #c28e4c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 12px rgba(194, 142, 76, 0.3);
+}
+
+.login-page .login-container button:hover {
+  background-color: #a8743f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(168, 116, 63, 0.4);
+}
+
+/* Message */
+.login-page #message {
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #b33c2e;
+}
+
+/* Social buttons */
+.login-page .social-btn {
+  width: 100%;
+  padding: 14px;
+  margin: 5px 0;
+  border: 1px solid #d1b99a;
+  background-color: #b27a37;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.3px;
+}
+
+.login-page .social-btn:hover {
+  background-color: #965e27;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(150, 94, 39, 0.3);
+}
+
+/* Signup prompt */
+.login-page .signup-prompt {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #5f4b3a;
+}
+
+.login-page .signup-prompt a {
+  color: #b86e3c;
+  text-decoration: none;
+}
+
+.login-page .signup-prompt a:hover {
+  text-decoration: underline;
+  color: #8a4e1e;
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 600px) {
+  .login-page .login-container {
+    padding: 25px 20px;
+  }
+  .login-page .login-container h2 {
+    font-size: 2rem;
+  }
+}

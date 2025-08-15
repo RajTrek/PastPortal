@@ -1,0 +1,656 @@
+import React, { useEffect, useState } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
+
+// Fix for default marker icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png'
+});
+
+const HomePage = () => {
+  const navigate = useNavigate();
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [inventions, setInventions] = useState([]);
+  const [filteredInventions, setFilteredInventions] = useState([]);
+  const [selectedEra, setSelectedEra] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
+  // Sample inventions data
+  const inventionsData = [
+    {
+      name: "Antikythera Mechanism",
+      era: "Ancient",
+      lat: 36.8,
+      lng: 23.5,
+      desc: "An ancient Greek analog computer used to predict astronomical positions and eclipses.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Antikythera_mechanism.jpg"
+    },
+    {
+      name: "Printing Press",
+      era: "Renaissance",
+      lat: 49.99,
+      lng: 8.27,
+      desc: "Invented by Johannes Gutenberg, it revolutionized the production of books in Europe.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Gutenberg_press.jpg"
+    },
+    {
+      name: "Steam Engine",
+      era: "Industrial",
+      lat: 51.5,
+      lng: -0.12,
+      desc: "James Watt's improved steam engine drove the Industrial Revolution.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Watt_steam_engine.jpg"
+    },
+    {
+      name: "Internet",
+      era: "Modern",
+      lat: 37.4,
+      lng: -122.1,
+      desc: "A global system of interconnected computer networks originating in the late 20th century.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Internet_map_1024.jpg"
+    },
+    {
+      name: "Electricity",
+      era: "Modern",
+      lat: 39.0,
+      lng: -77.0,
+      desc: "The discovery and harnessing of electricity transformed the world.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Thomas_Edison%2C_1880.jpg"
+    },
+    {
+      name: "Telephone",
+      era: "Modern",
+      lat: 42.0,
+      lng: -71.0,
+      desc: "Alexander Graham Bell's invention revolutionized communication.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Telephone_1876.jpg"
+    },
+  ];
+
+  // Initialize map on component mount
+  useEffect(() => {
+    const mapInstance = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(mapInstance);
+
+    setMap(mapInstance);
+    setInventions(inventionsData);
+    setFilteredInventions(inventionsData);
+    updateMarkers(inventionsData); // Show all markers initially
+
+    // Cleanup
+    return () => {
+      mapInstance.remove();
+    };
+  }, []);
+
+  // Function to filter inventions based on selected era
+  const filterInventions = (era) => {
+    setSelectedEra(era);
+    const filtered = inventionsData.filter(inv => inv.era === era || era === '');
+    setFilteredInventions(filtered);
+    updateMarkers(filtered);
+  };
+
+  // Function to update markers on the map
+  const updateMarkers = (inventionsToShow) => {
+    if (!map) return; // Ensure map is initialized
+
+    // Clear existing markers
+    markers.forEach(marker => map.removeLayer(marker));
+    const newMarkers = [];
+
+    inventionsToShow.forEach(inv => {
+      const marker = L.marker([inv.lat, inv.lng]).addTo(map);
+      marker.bindPopup(`
+        <strong>${inv.name}</strong><br>
+        ${inv.desc}<br>
+        <img src="${inv.image}" width="150">
+      `);
+      newMarkers.push(marker);
+    });
+
+    setMarkers(newMarkers);
+  };
+
+  // Function to handle search
+  const searchLocation = () => {
+    const searchValue = document.getElementById('searchInput').value.trim().toLowerCase();
+    const searchResults = inventionsData.filter(inv => inv.name.toLowerCase().includes(searchValue));
+    updateMarkers(searchResults);
+  };
+
+  // Function to toggle mobile menu
+  const toggleMenu = () => {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+  };
+
+  // Function to handle login
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    navigate('/home'); // Redirect to home page after login
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate('/login'); // Redirect to login page after logout
+  };
+
+  // Function to handle signup
+  const handleSignup = () => {
+    setIsSignedUp(true);
+    navigate('/signup'); // Redirect to signup page after signup
+  };
+
+  // Function to handle signout
+  const handleSignout = () => {
+    setIsSignedUp(false);
+    navigate('/signup'); // Redirect to signup page after signout
+  };
+
+  return (
+    <div>
+      
+
+
+
+
+
+      {/* Filter Options */}
+      <div className="filter-controls">
+        <label htmlFor="eraSelect">Filter by Era:</label>
+        <select id="eraSelect" onChange={(e) => filterInventions(e.target.value)}>
+          <option value="">All</option>
+          <option value="Ancient">Ancient</option>
+          <option value="Medieval">Medieval</option>
+          <option value="Renaissance">Renaissance</option>
+          <option value="Industrial">Industrial</option>
+          <option value="Modern">Modern</option>
+        </select>
+      </div>
+
+      {/* Search Controls */}
+      <div className="controls">
+        <input type="text" id="searchInput" placeholder="Search invention or place" />
+        <button onClick={searchLocation}>Search</button>
+      </div>
+
+      {/* Map Container */}
+      <div id="map"></div>
+
+      {/* Interesting Section Below the Map */}
+      <section className="featured-inventions">
+        <h2>Featured Inventions</h2>
+        <div className="invention-grid">
+          {filteredInventions.map(inv => (
+            <div className="invention-card" key={inv.name}>
+              <img src={inv.image} alt={inv.name} />
+              <h3>{inv.name}</h3>
+              <p>{inv.desc}</p>
+              <button onClick={() => alert(`More about ${inv.name}`)}>Learn More</button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer>
+        <p>&copy; 2025 PastPortals. All rights reserved.</p>
+        <p><a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a></p>
+      </footer>
+
+      {/* CSS */}
+      <style jsx global>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+          font-family: 'Poppins', sans-serif;
+          background: #f4f4f4;
+          color: #333;
+          padding-bottom: 100px;
+          font-size: 20px;
+          overflow-x: hidden;
+        }
+
+        header {
+          background: #2c3e50;
+          color: #ecf0f1;
+          padding: 1rem 1rem;
+          text-align: center;
+          font-family: 'Cinzel', serif;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+          font-size: 6rem;
+          animation: pulse 1.5s infinite;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+
+        .tagline {
+          font-size: 2.5rem;
+          margin-top: 10px;
+          text-align: center;
+        }
+
+        .hourglass {
+          width: 80px;
+          height: 80px;
+          margin-right: 10px;
+          animation: spin 2s infinite linear;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #1a242f;
+          padding: 1rem 2rem;
+          color: #ecf0f1;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          transition: background 0.3s ease;
+        }
+
+        nav:hover {
+          background: #2c3e50;
+        }
+
+        .nav-logo {
+          font-size: 2.5rem;
+          font-weight: bold;
+        }
+
+        .nav-links {
+          display: flex;
+          gap: 2.5rem;
+          align-items: center;
+        }
+
+        .nav-item {
+          position: relative;
+          font-size: 1.5rem;
+        }
+
+        .nav-item:hover .dropdown {
+          display: block;
+        }
+
+        .dropdown {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background-color: #2c3e50;
+          border-radius: 6px;
+          padding: 0.5rem;
+          min-width: 160px;
+          z-index: 10;
+        }
+
+        .dropdown a {
+          display: block;
+          color: #ecf0f1;
+          text-decoration: none;
+          padding: 0.5rem;
+          font-size: 1.3rem;
+          transition: background 0.3s ease;
+        }
+
+        .dropdown a:hover {
+          background-color: #1abc9c;
+        }
+
+        .auth-buttons {
+          display: flex;
+          gap: 1rem;
+        }
+
+        .auth-buttons button {
+          background: #e67e22;
+          color: #ecf0f1;
+          padding: 0.8em 1.5em;
+          border-radius: 6px;
+          font-weight: bold;
+          text-decoration: none;
+          font-size: 1.3rem;
+          transition: background 0.3s ease;
+          width: 150px;
+          text-align: center;
+          border: none;
+          cursor: pointer;
+        }
+
+        .auth-buttons button:hover {
+          background: #d35400;
+        }
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: -250px;
+          width: 250px;
+          height: 100%;
+          background: rgba(40, 40, 40, 0.9);
+          color: #ecf0f1;
+          padding: 2rem;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+          transition: left 0.3s ease;
+          z-index: 1000;
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .sidebar a {
+          display: block;
+          color: #ecf0f1;
+          text-decoration: none;
+          padding: 1rem 0;
+          font-size: 1.5rem;
+          transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+          background-color: #1abc9c;
+        }
+
+        .hamburger {
+          display: none;
+          flex-direction: column;
+          cursor: pointer;
+        }
+
+        .bar {
+          height: 3px;
+          width: 25px;
+          background-color: #ecf0f1;
+          margin: 3px 0;
+          transition: 0.4s;
+        }
+
+        @media (max-width: 768px) {
+          .nav-links { display: none; }
+          .auth-buttons { flex-direction: column; margin-top: 1rem; }
+          .hamburger {
+            display: flex;
+          }
+          .nav-item {
+            font-size: 1.2rem;
+          }
+          .tagline {
+            font-size: 1.5rem;
+          }
+          header h1 {
+            font-size: 4rem;
+          }
+        }
+
+        .filter-controls {
+          text-align: center;
+          margin: 1em;
+        }
+
+        .filter-controls label {
+                  margin-right: 10px;
+        }
+
+        #eraSelect {
+          padding: 0.5em;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+
+        .controls {
+          text-align: center;
+          margin: 1em;
+        }
+
+        #searchInput {
+          padding: 0.5em;
+          width: 300px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+
+        #map {
+          height: 600px; /* Increased height for better visibility */
+          width: 90%; /* Responsive width */
+          margin: 2em auto; /* Centered with more space */
+          border: 4px ridge #7c623e;
+          border-radius: 12px; /* Smoother rounded corners */
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Subtle depth */
+          overflow: hidden; /* Ensures rounded corners clip content */
+          z-index: 1; /* Ensures proper layering */
+          transition: all 0.3s ease; /* Smooth hover effects */
+        }
+
+        #map:hover {
+          box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        @media (max-width: 768px) {
+          #map {
+            height: 400px; /* Better mobile proportions */
+            width: 95%;
+            margin: 1em auto;
+          }
+        }
+
+        .featured-inventions {
+          padding: 2em;
+          background: #ffffff;
+          border-radius: 8px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          margin: 2em auto;
+          max-width: 800px;
+        }
+
+        .featured-inventions h2 {
+          font-size: 2.5rem;
+          margin-bottom: 1em;
+          color: #2c3e50;
+          text-align: center;
+        }
+
+        .invention-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 1.5em;
+        }
+
+        .invention-card {
+          background: #f9f9f9;
+          border-radius: 8px;
+          padding: 1em;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          transition: transform 0.2s;
+        }
+
+        .invention-card:hover {
+          transform: scale(1.05);
+        }
+
+        .invention-card img {
+          max-width: 100%;
+          border-radius: 4px;
+        }
+
+        .invention-card h3 {
+          margin: 0.5em 0;
+          font-size: 1.5rem;
+        }
+
+        .invention-card p {
+          font-size: 1rem;
+          margin-bottom: 1em;
+        }
+
+        .invention-card button {
+          background: #e67e22;
+          color: #ecf0f1;
+          padding: 0.5em 1em;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+
+        .invention-card button:hover {
+          background: #d35400;
+        }
+
+        footer {
+          background: #34495e;
+          color: #ecf0f1;
+          text-align: center;
+          padding: 2rem 1rem;
+          position: relative;
+          bottom: 0;
+          width: 100%;
+        }
+
+        footer p {
+          margin: 0.5rem 0;
+          font-size: 1.3rem;
+        }
+
+        footer a {
+          color: #e67e22;
+          text-decoration: none;
+          transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+          color: #d35400;
+        }
+          .filter-controls,
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2em auto;
+  max-width: 600px;
+  background: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.filter-controls label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#eraSelect {
+  appearance: none; /* Removes default dropdown styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="20" height="20" viewBox="0 0 20 20" fill="%232c3e50" xmlns="http://www.w3.org/2000/svg"><path d="M5 8l5 5 5-5H5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.75em center;
+  background-size: 1.2em;
+  padding: 0.6em 2.5em 0.6em 1em;
+  font-size: 1rem;
+  color: #2c3e50;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#eraSelect:hover {
+  border-color: #e67e22;
+  box-shadow: 0 0 10px rgba(230, 126, 34, 0.2);
+}
+
+#eraSelect:focus {
+  border-color: #e67e22;
+  outline: none;
+  box-shadow: 0 0 10px rgba(230, 126, 34, 0.4);
+}
+
+
+#searchInput {
+  flex: 1;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#searchInput:focus {
+  border-color: #e67e22;
+}
+
+.controls button {
+  padding: 0.5em 1em;
+  background: #e67e22;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 1rem;
+}
+
+.controls button:hover {
+  background: #d35400;
+}
+
+@media (max-width: 768px) {
+  .filter-controls,
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 90%;
+  }
+
+  #searchInput {
+    width: 100%;
+  }
+
+  .controls button {
+    width: 100%;
+  }
+}
+
+      `}</style>
+    </div>
+  );
+};
+
+export default HomePage;

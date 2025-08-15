@@ -1,0 +1,41 @@
+footer {
+  background-color: #1a242f; /* Dark background to match the navigation */
+  color: #ecf0f1; /* Light text color for contrast */
+  padding: 20px 0; /* Padding for spacing */
+  text-align: center; /* Centered text */
+  position: relative; /* Positioning */
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.footer-content {
+  max-width: 1200px; /* Limit the width for larger screens */
+  margin: 0 auto; /* Center the content */
+  padding: 0 20px; /* Padding for smaller screens */
+}
+
+.footer-content p {
+  margin: 10px 0; /* Margin for spacing between paragraphs */
+  font-size: 1.2rem; /* Font size for readability */
+}
+
+.footer-content a {
+  color: #e67e22; /* Amber color for links */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.footer-content a:hover {
+  color: #d35400; /* Darker amber on hover */
+  text-decoration: underline; /* Underline on hover for emphasis */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  footer {
+    padding: 15px 0; /* Adjust padding for smaller screens */
+  }
+
+  .footer-content p {
+    font-size: 1rem; /* Smaller font size for mobile */
+  }
+}

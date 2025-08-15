@@ -1,0 +1,129 @@
+/* Root Container */
+.century-map-container {
+  padding: 2rem;
+  background: #f7f7f7;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+/* Title */
+.century-map-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* Dropdown Selector */
+.century-selector select {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  background-color: white;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+/* Map Container */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Map Image Wrapper */
+.map-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  background: #fff;
+  padding: 1rem;
+  width: 90vw;
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Zoom Buttons */
+.map-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  border: none;
+  background-color: #2c3e50;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.zoom-btn:hover {
+  background-color: #34495e;
+}
+
+/* Map Image (Zoomable) */
+.map-image {
+  max-width: none;
+  max-height: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Info Section */
+.map-info {
+  text-align: center;
+  max-width: 800px;
+}
+
+.map-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.map-description {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Inventor Section */
+.inventor-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #f0f0f0;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.inventor-image {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.inventor-name {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.inventor-bio {
+  font-size: 0.95rem;
+  color: #666;
+}
+
