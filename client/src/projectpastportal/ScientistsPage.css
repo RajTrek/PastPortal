@@ -211,9 +211,9 @@ min-height: 100vh;
 }
 
 .invention-details {
-  width:100%; /* ⬅️ Increased width */
-  height: auto; /* ⬅️ Let height be based on content */
-  margin: 2rem auto 0 auto; /* ⬅️ Centered horizontally */
+  width:100%; /* ⬅ Increased width */
+  height: auto; /* ⬅ Let height be based on content */
+  margin: 2rem auto 0 auto; /* ⬅ Centered horizontally */
   background: #f1e9e1;
   padding: 1rem 1.5rem;
   border-radius: 14px;
@@ -305,6 +305,5 @@ min-height: 100vh;
     height: auto;
   }
 }
-
 
 }

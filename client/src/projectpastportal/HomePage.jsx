@@ -7,6 +7,7 @@ import InventionModal from './InventionModal'; // Adjust path if needed
 
 
 // Fix for default marker icons in Leaflet
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -403,40 +404,141 @@ marker.bindPopup(popupContent);
     updateMarkers(filtered);
   };
 
-  // Search by name
-  const searchLocation = () => {
-    const searchValue = document
-      .getElementById('searchInput')
-      .value.trim()
-      .toLowerCase();
-    const searchResults = inventionsData.filter((inv) =>
-      inv.name.toLowerCase().includes(searchValue)
-    );
+  const geocodePlace = async (placeName) => {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}`
+  );
+  const data = await response.json();
+  return data.length > 0 ? data[0] : null;
+};
+const placeFacts = {
+  london: "London was a hub of the Industrial Revolution, where James Watt's steam engine transformed manufacturing.",
+  athens: "Athens is home to the Antikythera Mechanism, the world's first known analog computer.",
+  mainz: "Mainz, Germany is where Gutenberg invented the printing press, revolutionizing communication.",
+  paloalto: "Palo Alto is part of Silicon Valley, birthplace of the modern internet and tech innovation.",
+  sanfrancisco: "San Francisco played a key role in the rise of the internet and early computing.",
+  delhi: "Delhi has a rich history of scientific and astronomical innovation from ancient India.",
+};
+const generateFallbackFact = (placeName) => {
+  const fallbackNarratives = [
+    `While ${placeName} may not be directly linked to a famous invention, it's part of the global story of innovation. From the wheel in Mesopotamia to the internet in Silicon Valley, every place holds the potential to inspire the next breakthrough.`,
+    `Innovation often begins in unexpected places. ${placeName} might not be in the spotlight yet, but history shows that even quiet corners of the world can spark revolutionary ideas.`,
+    `Think of ${placeName} as a blank canvas for invention. Just as Kitty Hawk became the birthplace of flight, any place can become a landmark of discovery.`,
+    `Inventions are born from curiosity, and ${placeName} is no exception. Whether it's ancient tools or future tech, every location has a story waiting to be written.`,
+  ];
+  const index = Math.floor(Math.random() * fallbackNarratives.length);
+  return fallbackNarratives[index];
+};
+const fetchWikipediaSummary = async (placeName) => {
+  const endpoint = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(placeName)}`;
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("Not found");
+    const data = await response.json();
+    return data.extract || null;
+  } catch (error) {
+    return null;
+  }
+};
+
+const fetchWikipediaImage = async (placeName) => {
+  const endpoint = `https://en.wikipedia.org/api/rest_v1/page/media/${encodeURIComponent(placeName)}`;
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    console.log('Wikipedia media response:', data); // 🔍 Debugging
+
+    // Try to find the first usable image
+    for (const item of data.items || []) {
+      if (item.type === 'image') {
+        // Try original
+        if (item.original?.source) return item.original.source;
+
+        // Try thumbnail
+        if (item.thumbnail?.source) return item.thumbnail.source;
+
+        // Try srcset
+        if (item.srcset?.length > 0) return item.srcset[0].src;
+      }
+    }
+
+    return null; // No usable image found
+  } catch (error) {
+    console.error('Error fetching Wikipedia image:', error);
+    return null;
+  }
+};
+  // SearchLocatio place or invention
+  const searchLocation = async () => {
+  const searchValue = document
+    .getElementById('searchInput')
+    .value.trim()
+    .toLowerCase();
+
+  // First try to match inventions
+  const searchResults = inventionsData.filter((inv) =>
+    inv.name.toLowerCase().includes(searchValue)
+  );
+
+  if (searchResults.length > 0) {
     setFilteredInventions(searchResults);
     updateMarkers(searchResults);
-  };
+  } else {
+    // If no invention matches, try geocoding the place
+    const place = await geocodePlace(searchValue);
+    if (place && map) {
+      const lat = parseFloat(place.lat);
+      const lon = parseFloat(place.lon);
+      map.setView([lat, lon], 8);
+
+      const placeKey = place.display_name.toLowerCase().split(',')[0].replace(/\s/g, '');
+    let fact = placeFacts[placeKey];
+if (!fact) {
+  fact = generateFallbackFact(place.display_name);
+  const wikiFact = await fetchWikipediaSummary(place.display_name);
+  if (wikiFact) {
+    fact = wikiFact;
+  }
+}
+
+
+const wikiImage = await fetchWikipediaImage(place.display_name);
+const imageTag = wikiImage
+  ? `<img src="${wikiImage}" width="150" style="margin-top: 8px;" />`
+  : '';
+const popupHtml = `
+  <div style="font-family: sans-serif; font-size: 14px; line-height: 1.4; max-width: 220px;">
+    <strong>${place.display_name}</strong><br>
+    ${fact}<br>
+    ${imageTag}
+  </div>
+`;
+
+L.popup()
+  .setLatLng([lat, lon])
+  .setContent(popupHtml)
+  .openOn(map);
+}
+  }
+};
 
   return (
     <div className="homepage-container">
-      {/* Filter Options */}
-      <div className="filter-controls">
-        <label htmlFor="eraSelect">Filter by Era:</label>
+      <div className="controls-container">
         <select
           id="eraSelect"
           value={selectedEra}
           onChange={(e) => filterInventions(e.target.value)}
         >
-          <option value="">All</option>
+          <option value="">All Eras</option>
           <option value="Ancient">Ancient</option>
           <option value="Medieval">Medieval</option>
           <option value="Renaissance">Renaissance</option>
           <option value="Industrial">Industrial</option>
           <option value="Modern">Modern</option>
         </select>
-      </div>
 
-      {/* Search Controls */}
-      <div className="controls">
         <input
           type="text"
           id="searchInput"
@@ -444,6 +546,7 @@ marker.bindPopup(popupContent);
         />
         <button onClick={searchLocation}>Search</button>
       </div>
+     
 
       {/* Map */}
       <div id="map"></div>

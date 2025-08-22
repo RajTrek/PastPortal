@@ -345,4 +345,77 @@
     flex-direction: row;
     gap: var(--space-md);
   }
+}/* === Style Selector Section === */
+.style-selector-section {
+  padding: 4rem 2rem;
+  background: linear-gradient(to bottom, #e6f4f1, #739ec9); /* faint green to soft white */
+  text-align: center;
+}
+
+.style-intro h2 {
+  font-size: 2rem;
+  font-style: italic;
+  color: #003049; /* deep blue accent */
+  margin-bottom: 0.5rem;
+}
+
+.style-intro p {
+  font-size: 1.1rem;
+  color: #444;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.style-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: nowrap;
+  margin-top: 2rem;
+}
+
+.style-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1rem;
+  width: 27%;
+  height: 20%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+  border-top: 5px solid transparent;
+  transform: rotate(-8deg);
+}
+
+.style-card:hover {
+  transform: rotate(0deg) scale(1.10);
+  box-shadow: 0 10px 24px rgba(0, 1. 1, 0.18);
+}
+
+/* Color accents per card */
+.style-card:nth-child(1) {
+  border-top-color: #00b4d8; /* cyan */
+}
+.style-card:nth-child(2) {
+  border-top-color: #43aa8b; /* green */
+}
+.style-card:nth-child(3) {
+  border-top-color: #ffb703; /* amber */
+}
+.style-card:nth-child(4) {
+  border-top-color: #fb8500; /* orange */
+}
+
+.style-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1/1;
+}
+
+.style-card span {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #222; /* darker text */
 }

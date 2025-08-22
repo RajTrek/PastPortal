@@ -1,4 +1,4 @@
-/* Root Container */
+/* Root Container 
 .century-map-container {
   padding: 2rem;
   background: #f7f7f7;
@@ -6,14 +6,14 @@
   text-align: center;
 }
 
-/* Title */
+/* Title 
 .century-map-container h1 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
   color: #333;
 }
 
-/* Dropdown Selector */
+/* Dropdown Selector 
 .century-selector select {
   padding: 0.6rem 1rem;
   font-size: 1rem;
@@ -24,7 +24,7 @@
   margin-bottom: 2rem;
 }
 
-/* Map Container */
+/* Map Container 
 .map-container {
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
   gap: 2rem;
 }
 
-/* Map Image Wrapper */
+/* Map Image Wrapper 
 .map-image-container {
   position: relative;
   overflow: hidden;
@@ -47,7 +47,7 @@
   align-items: center;
 }
 
-/* Zoom Buttons */
+/* Zoom Buttons 
 .map-zoom-controls {
   position: absolute;
   top: 10px;
@@ -72,14 +72,14 @@
   background-color: #34495e;
 }
 
-/* Map Image (Zoomable) */
+/* Map Image (Zoomable) 
 .map-image {
   max-width: none;
   max-height: none;
   transition: transform 0.3s ease-in-out;
 }
 
-/* Info Section */
+/* Info Section 
 .map-info {
   text-align: center;
   max-width: 800px;
@@ -96,7 +96,7 @@
   color: #555;
 }
 
-/* Inventor Section */
+/* Inventor Section 
 .inventor-info {
   display: flex;
   align-items: center;
@@ -127,3 +127,258 @@
   color: #666;
 }
 
+*/
+
+/* Root Container */
+.century-map-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #f7f7f7, #eaeaea);
+  text-align: center;
+  animation: fadeInPage 0.8s ease-in-out;
+}
+
+/* Title */
+.century-map-container h1 {
+  font-style: oblique;
+  font-size: 2.8rem;
+  margin-bottom: 2rem;
+  color: #2c3e50;
+  animation: slideDown 0.6s ease-in-out;
+}
+
+/* Slider */
+.century-slider {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.century-slider label {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #444;
+}
+
+.century-slider input[type="range"] {
+  width: 80%;
+  max-width: 800px;
+  height: 30px;
+  accent-color: #0078d7;
+  transition: transform 0.3s ease;
+}
+
+.century-slider input[type="range"]:hover {
+  transform: scale(1.05);
+}
+
+/* Map Container */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  animation: fadeSlideUp 0.8s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Map Image Container */
+.map-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 2px solid #ccc;
+  background: #fff;
+  padding: 1rem;
+  width: calc(100% - 4rem);
+  max-width: 1400px;
+  margin: 0 auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  animation: zoomFadeIn 0.6s ease-in-out;
+  transition: box-shadow 0.3s ease;
+}
+
+.map-image-container:hover {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+.map-image {
+  max-width: 100%;
+  max-height: 70vh;
+  transition: transform 0.4s ease-in-out;
+  border-radius: 12px;
+}
+
+.map-image:hover {
+  transform: scale(1.03);
+}
+
+/* Zoom Controls */
+.map-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  border: none;
+  background-color: #2c3e50;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-btn:hover {
+  background-color: #34495e;
+  transform: scale(1.1);
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+/* Info Section */
+.map-info {
+  text-align: left;
+  width: calc(100% - 4rem);
+  max-width: 1400px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  animation: fadeSlideUp 0.8s ease-in-out;
+  box-sizing: border-box;
+}
+
+.map-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.map-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.map-info p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.map-info a {
+  color: #0078d7;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.map-info a:hover {
+  color: #005bb5;
+}
+
+/* Inventor Section */
+.inventor-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #f0f0f0;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  width: calc(100% - 4rem);
+  max-width: 1400px;
+  margin: 1rem auto;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  animation: fadeSlideUp 1s ease-in-out;
+  box-sizing: border-box;
+}
+
+.inventor-image {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inventor-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.inventor-name {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.inventor-bio {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Animations */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .map-image-container {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .inventor-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .inventor-image {
+    width: 80px;
+    height: 100px;
+  }
+
+  .map-info {
+    padding: 1rem;
+  }
+
+  .century-slider input[type="range"] {
+    width: 100%;
+  }
+}

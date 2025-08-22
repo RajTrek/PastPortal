@@ -23,7 +23,7 @@
 //   <div className="video-wrapper">
 //     <iframe
 //       src={invention.videoUrl}
-//       title={`Video about ${invention.name}`}
+//       title={Video about ${invention.name}}
 //       frameBorder="0"
 //       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 //       allowFullScreen

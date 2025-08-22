@@ -1,4 +1,3 @@
-
 // src/projectpastportal/firebase.js
 
 import { initializeApp } from "firebase/app";

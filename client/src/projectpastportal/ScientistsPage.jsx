@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ScientistsPage.css';
-
+const getWikiUrl = (name) =>
+  `https://en.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}`;
 // Normalized and deduplicated scientist data
 const scientists = [
   {
@@ -12,7 +13,9 @@ const scientists = [
     invention: "Concepts of Helicopter, Parachute, and War Machines",
     img :"https://hips.hearstapps.com/hmg-prod/images/portrait-of-leonardo-da-vinci-1452-1519-getty.jpg?crop=1xw:1.0xh;center,top&resize=640:*",
     fact: "He was also a legendary artist who painted the Mona Lisa.",
-    inventionDetails:"Leonardo da Vinci is widely celebrated for the invention of Concepts of Helicopter, Parachute, and War Machines, which revolutionized the scientific world. This groundbreaking work laid the foundation for future advancements in the field. Experts consider it a cornerstone in the history of innovation. Thanks to this contribution, many modern technologies have emerged. Even today, students and researchers study this work to better understand its impact. It continues to inspire generations of scientists and inventors."
+    inventionDetails:"Leonardo da Vinci is widely celebrated for the invention of Concepts of Helicopter, Parachute, and War Machines, which revolutionized the scientific world. This groundbreaking work laid the foundation for future advancements in the field. Experts consider it a cornerstone in the history of innovation. Thanks to this contribution, many modern technologies have emerged. Even today, students and researchers study this work to better understand its impact. It continues to inspire generations of scientists and inventors.",
+     wikiUrl: "https://en.wikipedia.org/wiki/Leonardo_da_Vinci"
+
   },
   {
     name: "Michael Faraday",
@@ -326,14 +329,68 @@ const scientists = [
   }
 ];
 
+
+// ✅ Wikipedia fetch with scientist validation
+const fetchWikipediaScientist = async (term) => {
+  try {
+    const response = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(term.trim())}`
+    );
+    const data = await response.json();
+
+    if (data.type !== 'standard') return null;
+
+    const description = data.description?.toLowerCase() || '';
+    const extract = data.extract?.toLowerCase() || '';
+
+    const validRoles = [
+      'scientist', 'physicist', 'chemist', 'biologist', 'mathematician',
+      'astronomer', 'inventor', 'engineer', 'computer scientist',
+      'botanist', 'zoologist', 'ecologist', 'geologist', 'nuclear physicist'
+    ];
+
+    const isScientist = validRoles.some(role =>
+      description.includes(role) || extract.includes(role)
+    );
+
+    if (!isScientist) return null;
+
+    return {
+      name: data.title,
+      fullName: data.title,
+      dob: 'Unknown',
+      birthPlace: 'Unknown',
+      invention: data.description || 'Unknown',
+      fact: data.extract || 'No fun fact available.',
+      img: data.thumbnail?.source || '',
+      wikiUrl: data.content_urls?.desktop?.page || ''
+    };
+  } catch (error) {
+    console.error("Wikipedia fetch failed:", error);
+    return null;
+  }
+};
+
 export default function ScientistsPage() {
   const [search, setSearch] = useState('');
   const [selectedScientist, setSelectedScientist] = useState(null);
+  const [wikiScientist, setWikiScientist] = useState(null);
 
   const filteredScientists = scientists.filter(sci =>
     sci.name.toLowerCase().includes(search.toLowerCase()) ||
     sci.fullName.toLowerCase().includes(search.toLowerCase())
   );
+
+  useEffect(() => {
+    const match = filteredScientists.length > 0;
+    if (!match && search.trim()) {
+      fetchWikipediaScientist(search).then((result) => {
+        setWikiScientist(result);
+      });
+    } else {
+      setWikiScientist(null);
+    }
+  }, [search]);
 
   const handleCardClick = (sci) => {
     setSelectedScientist(sci);
@@ -346,9 +403,8 @@ export default function ScientistsPage() {
   return (
     <>
       <div className="scientist-page">
-        {/* Search bar directly in page */}
         <input
-          type="text"  
+          type="text"
           placeholder="Search scientists..."
           className="search-bar"
           value={search}
@@ -358,40 +414,39 @@ export default function ScientistsPage() {
         <div className="scientist-list">
           {filteredScientists.map((sci, index) => (
             <div className="scientist-card" key={index} onClick={() => handleCardClick(sci)}>
-              { sci.img && (
-                 <img src={sci.img}
-                 alt={sci.name}
-                 className="scientist-card-img" />
-                 )}
+              {sci.img && (
+                <img src={sci.img} alt={sci.name} className="scientist-card-img" />
+              )}
               <h2>{sci.name}</h2>
               <p><strong>Full Name:</strong> {sci.fullName}</p>
               <p><strong>Date of Birth:</strong> {sci.dob}</p>
               <p><strong>Place of Birth:</strong> {sci.birthPlace}</p>
               <p><strong>Famous Invention:</strong> {sci.invention}</p>
               <p><strong>Fun Fact:</strong> {sci.fact}</p>
+              {(sci.wikiUrl || getWikiUrl(sci.name)) && (
+  <p><strong>Wikipedia:</strong> <a href={sci.wikiUrl || getWikiUrl(sci.name)} target="_blank" rel="noopener noreferrer">View</a></p>
+)}
             </div>
           ))}
-        </div>
+             
+          {/* ✅ Wikipedia fallback card */}
+          {wikiScientist && (
+            <div className="scientist-card" onClick={() => handleCardClick(wikiScientist)}>
+              {wikiScientist.img && (
 
-        {/* Info Section (kept, commented out) */}
-        {/* <div className="info-section">
-          <div className="info-box">
-            <h3>About This Page</h3>
-            <p>This page showcases the contributions of history's most impactful scientists.</p>
-          </div>
-          <div className="info-box">
-            <h3>Why Learn About Scientists?</h3>
-            <p>Understanding their work helps us appreciate the roots of modern science.</p>
-          </div>
-          <div className="info-box">
-            <h3>Explore More</h3>
-            <p>Visit our Explore section to dive into inventions, innovations, and timelines.</p>
-          </div>
-          <div className="info-box">
-            <h3>PastPortals Project</h3>
-            <p>This content is part of the PastPortals initiative – a digital time travel experience.</p>
-          </div>
-        </div> */}
+                <img src={wikiScientist.img} alt={wikiScientist.name} className="scientist-card-img" />
+              
+              )}  
+              <h2>{wikiScientist.name}</h2>
+              <p><strong>Full Name:</strong> {wikiScientist.fullName}</p>
+              <p><strong>Date of Birth:</strong> {wikiScientist.dob}</p>
+              <p><strong>Place of Birth:</strong> {wikiScientist.birthPlace}</p>
+              <p><strong>Famous Invention:</strong> {wikiScientist.invention}</p>
+              <p><strong>Fun Fact:</strong> {wikiScientist.fact}</p>
+              <p><strong>Wikipedia:</strong> <a href={wikiScientist.wikiUrl} target="_blank" rel="noopener noreferrer">View</a></p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal Overlay */}
@@ -399,36 +454,31 @@ export default function ScientistsPage() {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={closeModal}>✖</button>
-             <div className="modal-content-wrapper">
-    {selectedScientist.img && (
-      <img
-        src={selectedScientist.img}
-        alt={selectedScientist.name}
-        className="scientist-modal-img"
-      />
-    )}
+            <div className="modal-content-wrapper">
+              {selectedScientist.img && (
+                <img
+                  src={selectedScientist.img}
+                  alt={selectedScientist.name}
+                  className="scientist-modal-img"
+                />
+              )}
 
-    <div className="scientist-modal-details">
-      <h2>{selectedScientist.name}</h2>
-      <p><strong>Full Name:</strong> {selectedScientist.fullName}</p>
-      <p><strong>Date of Birth:</strong> {selectedScientist.dob}</p>
-      <p><strong>Place of Birth:</strong> {selectedScientist.birthPlace}</p>
-      <p><strong>Famous Invention:</strong> {selectedScientist.invention}</p>
-      <p><strong>Fun Fact:</strong> {selectedScientist.fact}</p>
-    </div>
-  </div>
-
-  {/* 🟨 This is now OUTSIDE the flexbox row and below both */}
-  {selectedScientist.inventionDetails && (
-    <div className="invention-details">
-      <h3>Invention Details</h3>
-      <p>{selectedScientist.inventionDetails}</p>
-    </div>
-  )}
-
+              <div className="scientist-modal-details">
+                <h2>{selectedScientist.name}</h2>
+                <p><strong>Full Name:</strong> {selectedScientist.fullName}</p>
+                <p><strong>Date of Birth:</strong> {selectedScientist.dob}</p>
+                <p><strong>Place of Birth:</strong> {selectedScientist.birthPlace}</p>
+                <p><strong>Famous Invention:</strong> {selectedScientist.invention}</p>
+                <p><strong>Fun Fact:</strong> {selectedScientist.fact}</p>
+                {selectedScientist.wikiUrl && (
+                  <p><strong>Wikipedia:</strong> <a href={selectedScientist.wikiUrl} target="_blank" rel="noopener noreferrer">View</a></p>
+                )}
+              </div>
             </div>
+          </div>
         </div>
-         )}
+      )}
     </>
   );
+  
 }

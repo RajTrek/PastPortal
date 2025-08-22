@@ -482,13 +482,14 @@ label:hover {
 
 /* Buttons  */
 
-.home {
-  text-align: center; /* Center h1 and inline-block children */
-}
+ .home {
+  text-align: center;
+  height: 90vh; /* Center h1 and inline-block children */
+} 
 
 
 .home h1 {
-  font-size: 36px;
+  font-size: 50px;
   margin-bottom: 40px;
 }
 
@@ -497,7 +498,7 @@ label:hover {
   display: inline-block;
   padding: 15px 30px;
   margin: 15px;
-  font-size: 20px;
+  font-size: 30px;
   color: white;
    background-color: #e74c3c;/*#007bff; */
   border: none;
@@ -608,6 +609,10 @@ button[style*="#dc3545"]:hover {
   background-size: 30px 30px;
   background-position: 10px center;
   z-index: 1000;
+}
+.quiz {
+  position: relative;
+  padding-top: 60px; /* prevents overlap from fixed timer */
 }
 
 /* Mobile View */
