@@ -151,6 +151,7 @@ import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
+import BASE_API_URL from '../config';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -167,7 +168,7 @@ const Login = ({ onLogin }) => {
     }
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(`${BASE_API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -200,7 +201,7 @@ const Login = ({ onLogin }) => {
       const user = result.user;
       // Optionally, send user info to your backend for login/registration
       // Example:
-      await fetch('http://localhost:5000/api/login', {
+      await fetch(`${BASE_API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

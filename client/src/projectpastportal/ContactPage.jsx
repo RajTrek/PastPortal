@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import BASE_API_URL from '../config';
 
 const ContactPage = () => {
   const [processing, setProcessing] = useState(false);
@@ -47,7 +48,7 @@ const ContactPage = () => {
   setProcessing(true);
 
   try {
-    const response = await fetch('http://localhost:5000/api/contact', {
+const response = await fetch(`${BASE_API_URL}/api/contact`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

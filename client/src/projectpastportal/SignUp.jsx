@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import BASE_API_URL from '../config';
 
 const SignUp = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -43,7 +44,7 @@ const SignUp = ({ onLogin }) => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch(`${BASE_API_URL}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,7 +73,7 @@ const SignUp = ({ onLogin }) => {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       // Optionally, send user info to your backend for registration
-      await fetch('http://localhost:5000/api/signup', {
+      await fetch(`${BASE_API_URL}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
